@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator ni ENOSH</title>
+    <link rel="stylesheet" href="calc.css">
+</head>
+<body>
+    <div id="calc_box">
+        <input type="text" id="display_screen" readonly>
+
+        <div class="buttons">
+            <button onclick="clearDisplay()" class="operator">AC</button>
+            <button onclick="deleteLast()" class="operator">DEL</button>
+            <button onclick="appendGiven('%')" class="operator">%</button>
+            <button onclick="appendGiven('/')" class="operator">/</button>
+
+            <button onclick="appendGiven(7)">7</button>
+            <button onclick="appendGiven(8)">8</button>
+            <button onclick="appendGiven(9)">9</button>
+            <button onclick="appendGiven('*')" class="operator">*</button>
+
+            <button onclick="appendGiven(4)">4</button>
+            <button onclick="appendGiven(5)">5</button>
+            <button onclick="appendGiven(6)">6</button>
+            <button onclick="appendGiven('-')" class="operator">-</button>
+
+            <button onclick="appendGiven(1)">1</button>
+            <button onclick="appendGiven(2)">2</button>
+            <button onclick="appendGiven(3)">3</button>
+            <button onclick="appendGiven('+')" class="operator">+</button>
+
+            <button onclick="appendGiven(0)">0</button>
+            <button onclick="appendGiven('.')">.</button>
+            <button onclick="calculate()" id="equals" class="operator">=</button>
+        </div>
+    </div>
+
+    <audio src="jealous.mp3" type="audio/mp3" id="jealous"></audio>
+</body>
+
+    <script>
+        function appendGiven(Given) {
+            document.getElementById("display_screen").value += Given;
+        }
+
+        function clearDisplay() {
+            document.getElementById("display_screen").value = "";
+        }
+
+        function deleteLast(){
+            let current_display = document.getElementById("display_screen");
+            current_display.value = current_display.value.slice(0, -1);
+        }
+
+        function calculate() {
+            try {
+                let math_problem = document.getElementById("display_screen").value;
+
+                if (math_problem==="2+2"){
+                    clearDisplay();
+                    playSongWithLyrics();
+                }
+                else{
+                let result = eval(math_problem);
+                document.getElementById("display_screen").value = result;}
+
+            } 
+            catch (error) {
+                document.getElementById("display_screen").value = "Error";
+            }
+        }
+
+        function playSongWithLyrics() {
+            const song = document.getElementById("jealous");
+            const display = document.getElementById("display_screen");
+            display.style.textAlign = "center";
+            display.style.fontStyle = "italic";
+            display.style.fontWeight = "bolder";
+            display.classList.add("change_bg");
+            const lyrics = [
+                { text: "I put my chin music up", time: 1000 },
+                { text: "and Im puffin my chest", time: 3500 },
+                { text: "Im getting red in the face", time: 6600 },
+                { text: "You can call me obsessed", time: 8800 },
+                { text: "Its not your fault", time: 10800 },
+                { text: "that they hover", time: 12500 },
+                { text: "I mean no disrespect", time: 14700 },
+                { text: "Its my right ", time: 16500 },
+                { text: "to be hellish", time: 18000 },
+                { text: "I still get ", time: 19100 },
+                { text: "jealous", time: 21000 },
+                { text: "MAMAW", time: 21900 },
+            ];
+
+            let lyricIndex = 0;
+            const updateLyrics = () => {
+                while (lyricIndex < lyrics.length && song.currentTime * 1000 >= lyrics[lyricIndex].time) {
+                    display.classList.add("fadeInOut");
+                    display.value = lyrics[lyricIndex].text;
+                    lyricIndex++;
+                }
+            };
+
+            song.ontimeupdate = updateLyrics;
+            song.currentTime = 0;
+            song.play().then(updateLyrics).catch(() => {});
+
+             song.onended = () => {
+            display.value = "";
+            display.style.textAlign = "left";
+            display.style.fontStyle = "normal";
+            display.style.fontWeight = "normal";
+                    display.classList.remove("change_bg");
+                };
+        }
+    </script>
+</html>
